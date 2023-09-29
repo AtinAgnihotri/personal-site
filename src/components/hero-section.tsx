@@ -8,6 +8,7 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { TypeAnimation } from "react-type-animation";
 import { cn } from "~/lib/utils";
+import Link from "next/link";
 
 const TypingSequence = () => {
   return (
@@ -58,7 +59,11 @@ const HeroSection: React.FC<THeroSection> = ({ className }) => {
             <Button variant="default" size="default">
               Hire Me
             </Button>
-            <Button>Download CV</Button>
+            <Button asChild>
+              <a href="/docs/Atin_Agnihotri_Resume_2023.pdf" download>
+                Download CV
+              </a>
+            </Button>
           </div>
         </div>
 
