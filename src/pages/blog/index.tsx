@@ -1,7 +1,7 @@
 import ComingSoon from "~/components/coming-soon";
 
-const About = () => {
+const BlogPage = () => {
   return <ComingSoon />;
 };
 
-export default About;
+export default BlogPage;

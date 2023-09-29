@@ -1,5 +1,7 @@
+import ComingSoon from "~/components/coming-soon";
+
 const Portfolio = () => {
-  return <h1>About</h1>;
+  return <ComingSoon />;
 };
 
 export default Portfolio;
