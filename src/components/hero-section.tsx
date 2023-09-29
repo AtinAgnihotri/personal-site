@@ -56,8 +56,14 @@ const HeroSection: React.FC<THeroSection> = ({ className }) => {
             <TypingSequence />
           </div>
           <div className="xbg-slate-200 mb-4 mt-4 flex  justify-around gap-3 md:mb-0 md:justify-start">
-            <Button variant="default" size="default">
-              Hire Me
+            <Button asChild>
+              {/* This is a placeholder. To be redone with contact section */}
+              <a
+                href="https://www.linkedin.com/in/atin-agnihotri/"
+                target="_blank"
+              >
+                Hire Me
+              </a>
             </Button>
             <Button asChild>
               <a href="/docs/Atin_Agnihotri_Resume_2023.pdf" download>
