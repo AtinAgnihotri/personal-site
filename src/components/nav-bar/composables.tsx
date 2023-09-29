@@ -24,7 +24,9 @@ export const SocialNavButtons: React.FC<{ drawer?: boolean }> = ({
   drawer,
 }) => {
   return (
-    <NavButtonCollection className={drawer ? "flex-row justify-center" : ""}>
+    <NavButtonCollection
+      className={drawer ? "-mt-4 flex-row justify-center" : ""}
+    >
       {SocialLinks.map((sl) => {
         return (
           <li key={sl.key}>
@@ -40,12 +42,12 @@ export const SocialNavButtons: React.FC<{ drawer?: boolean }> = ({
   );
 };
 
-export const SiteNavButtons = () => {
+export const SiteNavButtons: React.FC<{ drawer?: boolean }> = ({ drawer }) => {
   return (
     <NavButtonCollection>
       {NavLinks.map((nv) => {
         return (
-          <li key={nv.key}>
+          <li key={nv.key} className="flex justify-center">
             <Button asChild variant="link" className="text-white">
               <Link href={nv.link}>{nv.child}</Link>
             </Button>
@@ -106,9 +108,9 @@ export const NavDrawer = () => {
       <PopoverTrigger>
         <NavDrawerButton />
       </PopoverTrigger>
-      <PopoverContent className="w-screen border-transparent bg-transparent p-0 px-32 py-0">
+      <PopoverContent className="w-screen border-transparent bg-transparent p-0 px-4 py-0">
         <div className="bg-[#181818dd]">
-          <SiteNavButtons />
+          <SiteNavButtons drawer />
           <SocialNavButtons drawer />
         </div>
       </PopoverContent>
