@@ -16,13 +16,15 @@ const TypingSequence = () => {
         // Same substring at the start will only be typed out once, initially
         "Trying to center a div",
         1000, // wait 1s before replacing "Mice" with "Hamsters"
+        "Trying to juggle docker images",
+        1000,
         "Trying to send out a PN",
         1000,
-        "Trying to juggle my docker images",
+        "Trying to not deadlock goroutines",
         1000,
-        "Trying to wrestle with Go mutexes",
+        "Trying to blog",
         1000,
-        "Trying to blog, or at least a snarky tweet",
+        "Trying to run the app @ 60fps",
         1000,
         "Trying to stay on topic",
         1000,
@@ -49,7 +51,7 @@ const HeroSection: React.FC<THeroSection> = ({ className }) => {
           <p className="text-xl text-slate-300 sm:text-2xl">
             And you can find me
           </p>
-          <div className="text-3xl text-slate-300 md:text-4xl">
+          <div className="h-20 w-80 text-3xl text-slate-300 md:h-auto md:w-auto md:text-4xl">
             <TypingSequence />
           </div>
           <div className="xbg-slate-200 mb-4 mt-4 flex  justify-around gap-3 md:mb-0 md:justify-start">

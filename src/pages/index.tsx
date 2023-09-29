@@ -13,7 +13,7 @@ export default function Home() {
       {/* <br />
         <br />
         <br /> */}
-      <HeroSection className="md:mt-8 lg:mx-24 xl:mx-48" />
+      <HeroSection className="mt-8 lg:mx-24 xl:mx-48" />
       {/* <HeroSection />
         <HeroSection />
         <HeroSection />
