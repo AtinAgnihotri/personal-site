@@ -61,7 +61,7 @@ const HeroSection: React.FC<THeroSection> = ({ className }) => {
             </Button>
             <Button asChild>
               <a href="/docs/Atin_Agnihotri_Resume_2023.pdf" download>
-                Download CV
+                Download Resume
               </a>
             </Button>
           </div>
