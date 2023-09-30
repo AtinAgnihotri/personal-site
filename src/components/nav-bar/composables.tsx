@@ -20,9 +20,11 @@ const NavButtonCollection: React.FC<
   );
 };
 
-export const SocialNavButtons: React.FC<{ drawer?: boolean }> = ({
-  drawer,
-}) => {
+export type TNavButtons = {
+  drawer?: boolean;
+};
+
+export const SocialNavButtons: React.FC<TNavButtons> = ({ drawer }) => {
   return (
     <NavButtonCollection
       className={drawer ? "-mt-4 flex-row justify-center" : ""}
@@ -42,7 +44,7 @@ export const SocialNavButtons: React.FC<{ drawer?: boolean }> = ({
   );
 };
 
-export const SiteNavButtons: React.FC<{ drawer?: boolean }> = ({ drawer }) => {
+export const SiteNavButtons: React.FC<TNavButtons> = ({ drawer }) => {
   return (
     <NavButtonCollection>
       {NavLinks.map((nv) => {

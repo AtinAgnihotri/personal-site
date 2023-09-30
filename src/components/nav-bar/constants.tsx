@@ -48,11 +48,11 @@ export const NavLinks: NavBarItem[] = [
     link: "/",
     child: "Home",
   },
-  {
-    key: "about",
-    link: "/about",
-    child: "About",
-  },
+  // {
+  //   key: "about",
+  //   link: "/about",
+  //   child: "About",
+  // },
   {
     key: "contact",
     link: "/contact",

@@ -2,11 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import HeroSection from "~/components/hero-section";
 
-import { api } from "~/utils/api";
-
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       {/* <main className="mx-auto flex min-h-screen flex-col bg-black px-12 py-8"> */}
