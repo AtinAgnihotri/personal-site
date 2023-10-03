@@ -70,8 +70,8 @@ const Contact = () => {
 
   return (
     // <div className="flex flex-col items-center justify-end md:flex-row md:justify-between">
-    <div className="flex h-full w-full flex-col items-center justify-center p-8 text-white md:flex-row">
-      <div className="flex w-full flex-col">
+    <div className="flex h-full w-full flex-col items-center justify-center p-8 pt-36 text-white md:flex-row md:pt-0">
+      <div className=" flex w-full flex-col md:mt-0">
         <h1 className="pb-8 text-3xl text-slate-300 md:text-4xl">
           Have a burning query, think I might be the right fit for your team, or
           just wanna say hi? My inbox is always open:
@@ -152,7 +152,10 @@ const Contact = () => {
           {SocialLinks.map((sl) => {
             return (
               <Button asChild key={sl.key}>
-                <a href={sl.link} className="h-16 w-16 text-xl">
+                <a
+                  href={sl.link}
+                  className="h-8 w-8 md:h-16 md:w-16 md:text-xl"
+                >
                   {sl.child}
                 </a>
               </Button>
