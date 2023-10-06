@@ -13,7 +13,7 @@ import {
 const NavBar = () => {
   return (
     <>
-      <nav className="fixed flex w-full justify-end bg-black ">
+      <nav className="fixed z-10 flex w-full justify-end bg-black ">
         <div className="flex flex-wrap items-center justify-end p-4 md:w-full">
           {/* <NavDrawerButton /> */}
           <NavDrawer />
