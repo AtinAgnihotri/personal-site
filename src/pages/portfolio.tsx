@@ -125,20 +125,9 @@ const PORTFOLIO_PROJECTS: TProjectCard[] = [
   {
     name: "Step Runner",
     codeLink: "https://github.com/AtinAgnihotri/PlantTester",
-    previewLink: "https://app.bitrise.io/app/6358872685672728",
-    description: "A Dummy App to practice my testing chops",
-    techUsed: [
-      "Android",
-      "Java",
-      "Espresso",
-      "Barista",
-      "MockWebServer",
-      "UIAutomator",
-      "Bitrise",
-      "Gspread",
-      "Python",
-      "Trefle API",
-    ],
+    description:
+      "A vertical infinite runner that requires both and skill and luck to get good at.",
+    techUsed: ["Unity", "C#", "TextMesh Pro"],
     image: "/images/projects/step_runner.png",
     cardBackground: true,
     bgType: "clip",
