@@ -13,6 +13,9 @@ If you are not familiar with the different technologies used in this project, pl
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
+- [Resend](https://resend.com)
+- [MDX](https://mdxjs.com/)
+- [ContentLayer](https://contentlayer.dev/)
 
 ## Learn More
 
