@@ -33,6 +33,7 @@ const config = {
       },
     ],
   },
+  ignorePatterns: ["contentlayer.config.js"],
 };
 
 module.exports = config;

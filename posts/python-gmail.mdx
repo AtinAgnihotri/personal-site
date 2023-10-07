@@ -1,0 +1,213 @@
+---
+title: Quick and Dirty Python - Gmailing
+description: How Python + Google Sheets = ♥️
+publishedAt: Sun Aug 22 2021 21:28:25 GMT+0530 (India Standard Time)
+published: true
+imageUrl: /images/posts/python-gmail.jpg
+---
+
+<div class="w-full flex flex-col md:flex-row md:items-center justify-between">
+
+# Quick and Dirty Python - Gmailing
+
+  <p class="md:text-xl">Sun, 22 Aug 2021</p>
+</div>
+
+<br />
+
+<div class="flex w-full items-center justify-center">
+  <Image
+    src="/images/posts/python-gmail.jpg"
+    alt="python-email"
+    width="1024"
+    height="576"
+  />
+</div>
+
+One of my friend whose whole world revolves around Python has a saying, “Python is the second best language for everything”.
+
+I haven't heard anything truer. Python second best language for everything. Are there languages faster? Yeah. Are there languages richer in features? True. But no language allows you to go from ideation to a proof of concept nearly as fast as python. And given the way it reads, no other language is more friendly to people who don’t code for a living, thus making for a perfect language for automating the boring stuff away.
+
+Thus I thought to share a few things that I use regularly to automating the boring stuff out of my own workflows.
+
+Are these the best ways to do it? No. I mean, see the title!
+
+Today I would like to show how you can write a script to send a email with your Gmail account, but before we can get to the code, we have some setup to do.
+
+## Setup
+
+Create a new gmail account.
+I would highly recommend not to use one already in use, due to potential security issues. However, should you choose to do so, skip to point 2.
+Switch on “Allow less secure apps” in this account's security settings.
+If you are using your own account. I would recommend turn on Two Factor Authentication. Once you do that, you won’t be able to turn on “Allow less secure apps”. Instead you would need to create an App Password, and use that as a password in code.
+Save that in an environment variable. Let's say QAD_PWD
+Here's a good guide on how to do that on Windows
+On a UNIX-type OS, add the following to your .bash_profile or .zprofile file.
+
+```sh
+export QAD_PWD=your_password
+```
+
+Having done that, you're all set to code!
+
+## Show me the code!
+
+First up, you need to import ssl to create a secure context for gmailing, and import smtplib to connect to Gmail's SMTP server.
+
+Note: SMTP stands for Standard Mail Transfer Protocol and underlies all the mailing we take for granted. You can read more about it [here](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol).
+
+```python
+import ssl
+import smtplib
+```
+
+Now we can retrieve our password. I'm going to use os here but you're free to use a package of your liking.
+
+```python
+import os
+pwd = os.environ['QAD_PWD']
+```
+
+Next, we need to setup a secure ssl context and finally connect with gmail's smtp server.
+
+Note: The port for ssl is 465, and the url to Gmail's SMTP server is smtp.gmail.com
+
+```python
+sender_account = "dummy.sender@gmail.com"
+secure_context = ssl.create_default_context()
+with smtplib.SMTP_SSL("smtp.gmail.com", 465, context= secure_context) as server:
+    server.login(sender_account, pwd)
+    # todo
+```
+
+That's all well and good, but what about sending email? We'll that's just a matter of adding 1 more line.
+
+```python
+server.sendmail(sender_email, "dummy.reciever@gmail.com", "Hey! This mail was sent using python")
+```
+
+And you'll end up with something like this:
+
+```python
+import ssl
+import smtplib
+import os
+
+pwd = os.environ['QAD_PWD']
+
+sender_account = "dummy.sender@gmail.com"
+reciever_account = "dummy.reciever@gmail.com"
+msg = "Hey! This mail was sent using python"
+secure_context = ssl.create_default_context()
+with smtplib.SMTP_SSL("smtp.gmail.com", 465, context= secure_context) as server:
+    server.login(sender_account, pwd)
+    server.sendmail(sender_account, reciever_account, msg)
+```
+
+And that's it folks. You just sent your first mail using python.
+
+## Fun with MIMEMultipart
+
+You're not restricted to sending just some text over email. You can setup Subject and BCCS, send email rich with fancy html and css, or ripe with attachments (within the upload size limit, of course). And MIMEMultipart is your friend in this endeavour.
+
+Here we are going to see how to send a HTML laden email using MIMEMultipart and MIMEText, and as always we start by importing those.
+
+```python
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+```
+
+We now need to construct our message a bit differently than before.
+
+```python
+msg = MIMEMultipart("alternative")
+```
+
+Make note of that “alternative”, we'll come back to that in a bit. But before that, we can now specify From, To, Subject and even BCC in the msg as a number of keys.
+
+```python
+msg["Subject"] = "rich email"
+msg["From"] = sender_email
+msg["To"] = receiver_email
+msg["Bcc"] = reciever_email
+```
+
+Remember that “alternative”? That will help MIMEMultipart combine both HTML and Text data into a single message to be sent.
+
+```python
+text = """\
+Hey!
+This mail was sent using python"""
+
+html = """\
+<html>
+  <body>
+    <p>Hey!<br>
+       This mail was sent using python
+    </p>
+  </body>
+</html>
+"""
+
+# Turn the text and html into MIMEText so they can be attached to MIMEMultipart message
+html_part = MIMEText(text, "plain")
+text_part = MIMEText(html, "html")
+
+msg.attach(html_part)
+msg.attach(text_part)
+```
+
+So you end up with something like this:
+
+```python
+import ssl
+import smtplib
+import os
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+pwd = os.environ['QAD_PWD']
+
+sender_account = "dummy.sender@gmail.com"
+reciever_account = "dummy.reciever@gmail.com"
+
+msg = MIMEMultipart("alternative")
+msg["Subject"] = "rich email"
+msg["From"] = sender_email
+msg["To"] = receiver_email
+msg["Bcc"] = reciever_email
+
+text = """\
+Hey!
+This mail was sent using python"""
+
+html = """\
+<html>
+  <body>
+    <p>Hey!<br>
+       This mail was sent using python
+    </p>
+  </body>
+</html>
+"""
+
+# Turn the text and html into MIMEText so they can be attached to MIMEMultipart message
+html_part = MIMEText(text, "plain")
+text_part = MIMEText(html, "html")
+
+msg.attach(html_part)
+msg.attach(text_part)
+
+
+secure_context = ssl.create_default_context()
+with ("smtp.gmail.com", 465, context= secure_context) as server:
+    server.login(sender_account, pwd)
+    server.sendmail(sender_account, reciever_account, msg.as_string())
+```
+
+There's a lot more that can be done with this as a base. You can attach files through MIMEBase and even include them in your email HTML by giving them a Content-ID, or send personalised emails by employing a CSV or Excel sheet, I leave it up-to you to find out about it. And hopefully the simplicity of this approach inspires you to try your hand at this, or automate away some soul-sucking part of your job.
+
+Really, the world (well, your IDE of choice) is your oyster.
+
+PS: To check out how I used this to create Email reports for Android [Unit and UITests](https://github.com/AtinAgnihotri/PlantTester) [running on bitrise](https://app.bitrise.io/app/6358872685672728), look [here](https://github.com/AtinAgnihotri/EmailReports).
