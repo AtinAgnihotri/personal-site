@@ -1,0 +1,77 @@
+---
+title: The Hermetic Test Pattern and You
+description: The Hermetic Test Pattern and why you should use it
+publishedAt: Sun Oct 04 2020 00:00:00 GMT+0530 (India Standard Time)
+published: true
+imageUrl: /images/posts/hermet_post-2.jpg
+---
+
+<div class="w-full flex flex-col md:flex-row md:items-center justify-between">
+
+# The Hermetic Test Pattern and You
+
+  <p class="md:text-xl">Sun, 04 Oct 2020</p>
+</div>
+
+<br />
+
+<div class="flex w-full items-center justify-center">
+  <Image
+    src="/images/posts/hermet_post-2.jpg"
+    alt="hermetic-test-pattern"
+    width="1024"
+    height="576"
+  />
+</div>
+
+I've never heard the Hermetic test pattern defined better than by the phrase "Test is an Island", a play on the old adage of no man is an island.
+
+The gist of the Hermetic test pattern is to write tests in such a way that each test is completely self-sufficient and independent of others. Any dependency on other tests or a third-party service should be ruthlessly avoided.
+
+To do that with any test, a test need to do the following:
+
+- Handle it's own Setup
+- Handle it's own Teardown
+- Handle it's own Environments
+
+There are many advantages to this, as I will demonstrate using [PlantTester](https://github.com/AtinAgnihotri/PlantTester), a test app I wrote to better my test automation chops with Android apps in a later post, but in broad terms, it will do the following for you:
+
+## Speed Up the Tests
+
+By removing the dependencies, you are removing the need to wait for those dependencies to return with a response. Admittedly this is more of a concern with UI tests than any other, but this quickly can either become a major pain in the butt or a major relief depending on the way you chose to go, as even small differences in test times adds up.
+
+A simple back of the napkin calculation can help us to get this point across.
+
+Let's say you have a test harness of 200 test workflows, that make network calls. Let's say each network call takes 400 milliseconds and there are on average 10 such calls per test.
+
+If you were to remove these network calls by mocking them, you might only be reducing each individual test by 4 seconds, but overall you have shaved off over 13 minutes from your testing. This can be a godsend if you have placed the tests in your CI Pipeline (as you should), speeding up your build process.
+
+## Prevent Test Environment Pollution
+
+You don't want the state of your unit/app for one test, interfering with another. Let's see this with an example:
+
+Let's say Joe, our automation guy working for the famous taxi sharing app, Super, has decided to test two workflows, one being when the user has not paid for the previous ride and is trying to book another ride, the other being the normal ride booking workflow that the user goes through. Being the slick guy he is, he kept the tests in the CI pipeline and created a script to log bugs in the company's Slack channel whenever any of those two tests fails.
+
+Only problem is Joe, due to his love for spaghetti, has gone with the Spaghetti Anti-Pattern and created end-to-end tests that have common setups and teardowns and share an environment.
+
+A short while later everybody in the company is very angry with Joe due to the deluge of bug messages in Slack everyone has been receiving.
+
+You see, he placed the Unpaid workflow before the normal one, and since he didn't make the test hermetic, the second workflow will always fail and the state of the app will indicate that user has not paid for the previous ride, and prevent any booking before the user has done so.
+
+**Don't be like Joe, keep your tests hermetic.**
+
+## Reduce Test Flakiness
+
+This is the most important point. The bedrock of good testing is determinism, such that everything works when it meets functional requirements and if it does not, it is easy to debug why.
+
+However, whenever you have tests that are dependent on third party dependencies, you are introducing more things that might lead to the scenario of a test failing even though the Unit/App under test meets all the functional requirement, because something went wrong with those dependencies.
+
+By making the test hermetic you can be sure that the test fails only when the thing being tested failed to meet the test criteria.
+
+---
+
+In a later post, I aim to show how I used the Hermetic Test Pattern with [PlantTester](https://github.com/AtinAgnihotri/PlantTester), to make the tests entirely hermetic. Stay tuned for that.
+
+---
+
+**Note**: This article was originally published on the [Paytm Money Tech Blog](https://www.paytmmoney.com/blog/hermetic-test-pattern/).

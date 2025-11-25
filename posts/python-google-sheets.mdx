@@ -1,0 +1,300 @@
+---
+title: Quick and Dirty Python - Google Sheets
+description: How Python + Google Sheets = ♥️
+publishedAt: Sun Aug 29 2021 00:00:00 GMT+0530 (India Standard Time)
+published: true
+imageUrl: /images/posts/automation-sheets.jpg
+---
+
+<div class="w-full flex flex-col md:flex-row md:items-center justify-between">
+
+# Quick and Dirty Python - Google Sheets
+
+  <p class="md:text-xl">Sun, 29 Aug 2021</p>
+</div>
+
+<br />
+
+<div class="flex w-full items-center justify-center">
+  <Image
+    src="/images/posts/automation-sheets.jpg"
+    alt="python-google-sheets"
+    width="1024"
+    height="576"
+  />
+</div>
+
+One of my friend whose whole world revolves around Python has a saying, "Python is the second best language for everything"
+
+I haven't heard anything truer. Python second best language for everything. Are there languages faster? Yeah. Are there languages richer in features? True. But no language allows you to go from ideation to a proof of concept nearly as fast as python. And given the way it reads, no other language is more friendly to people who don't code for a living, thus making for a perfect language for automating the boring stuff away.
+
+Thus I thought to share a few things that I use regularly to automating the boring stuff out of my own workflows.
+
+Are these the best ways to do it? No. I mean, see the title!
+
+Today I would like to show how you can employ python to do a lot of stuffs with Google Sheets. But before we can get to the code, we need to do some setup.
+
+## Setup
+
+**1) Go to the google cloud console and create a new project.**
+
+<Image src="/images/posts/create_project_on_dashboard.webp" alt="Create project" width="800" height="400" />
+
+**2) Give project a name and click Create.** Once you do, select the newly created project from your notifications.
+
+<Image src="/images/posts/creating_new_project.webp" alt="Creating new project" width="800" height="400" />
+<Image src="/images/posts/select_project.webp" alt="Select project" width="800" height="400" />
+
+**3) Upon selecting the project, you'll land on the project dashboard.** Here you need to Add two APIs:
+   - Google Sheets API
+   - Google Drive API
+
+To Add Sheets API, First click on Enable APIs and Services on the Project Dashboard.
+
+<Image src="/images/posts/enabling_apis-1.webp" alt="Enable APIs" width="800" height="400" />
+
+Then search for Google Sheets API
+
+<Image src="/images/posts/search_google_sheet_api.webp" alt="Search Google Sheets API" width="800" height="400" />
+
+And enable the API on the API Page.
+
+<Image src="/images/posts/enable_google_sheet_api.webp" alt="Enable Google Sheets API" width="800" height="400" />
+
+Similarly you can enable the Google Drive API.
+
+<Image src="/images/posts/enable_google_drive_api.webp" alt="Enable Google Drive API" width="800" height="400" />
+
+**4) Now you need to create credentials for it.** Go back to Project Dashboard and click on Create Credentials.
+
+<Image src="/images/posts/create_creds.webp" alt="Create credentials" width="800" height="400" />
+
+**5) Therein, setup credentials** by selecting Google Drive API in the dropdown, select the Application Data radio button and since we won't be using it with any Compute or Cloud service (for now), select No in the options for the same.
+
+<Image src="/images/posts/setup_creds.webp" alt="Setup credentials" width="800" height="400" />
+
+**6) Now, you'll need to create a service account** and get credentials for it. Give it a name and description if you like and skip the rest for now. Then click Done.
+
+<Image src="/images/posts/setup_service_acc.webp" alt="Setup service account" width="800" height="400" />
+
+**7) You should then land on the Credentials screen,** where you'll see the service account you just setup. Click on the Configure Consent Screen button to continue.
+
+<Image src="/images/posts/oauth_config.webp" alt="OAuth config" width="800" height="400" />
+
+**8) If you're doing this with an account that is part of an organisation's Google Workspace,** you can select internal, however if you're not you'll have to select External. That will create credentials in testing mode, so you won't have to deal with consent screen. However if and when you decide to make this production ready, you'll have to verify your app, which you can learn more about [here](https://support.google.com/cloud/answer/7454865).
+
+**9) Having done that, you can now create a key for your service account.** To do that, go to the Keys tab and click on Add Key, then Create new key.
+
+<Image src="/images/posts/create_add_new_key.webp" alt="Create new key" width="800" height="400" />
+
+**10) Select JSON in the popup that opens.** That will download a json file with the private key for your service account.
+
+<Image src="/images/posts/select_json_key.webp" alt="Select JSON key" width="800" height="400" />
+
+I'll be renaming the downloaded json to "client_creds.json". The last thing you'll need to do is take the service worker account from this json, which will be in the key `"client_email"`,
+
+<Image src="/images/posts/service_email.webp" alt="Service email" width="800" height="400" />
+
+And add this to your google sheet, similar to how you'd share it with any other account.
+
+<Image src="/images/posts/acc_share.webp" alt="Share with service account" width="800" height="400" />
+
+And with that, we're done.
+
+Phew! That was quite a lot to get it setup. Thankfully you need do it only once and now we can move onto the real reason you're here.
+
+## Getting Started
+
+To get started, you'll need two packages, that you can get from pip, either directly in your machine or in your virtual environment (I'll recommend the later, but hey! remember the title? so I won't blame you for going with the former).
+
+```bash
+pip3 install gspread
+pip3 install oauth2client
+```
+
+Now we can truly begin by importing gspread and ServiceAccountCredentials from oauth2client. We'll also be importing Pretty Print as we're going to be handling dictionaries a lot.
+
+```python
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pprint
+```
+
+First we'll create a scope with `https://spreadsheets.google.com/feeds` and `https://www.googleapis.com/auth/drive`, as well as the credentials using this scope as well the contents of client_creds.json. Using this credential, we'll create a client with the authorisation to access the google sheets.
+
+```python
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_creds.json', scope)
+client = gspread.authorize(creds)
+```
+
+Getting access to the worksheet then is just matter of one line. (Well, two here, but you get the gist)
+
+```python
+SHEET_NAME = 'PyGSheets' # Name of the sheet
+SHEET_NO = 0 # Index of sheet, starting from 0
+sheet = client.open(SHEET_NAME).get_worksheet(SHEET_NO)
+```
+
+Or you can get the worksheet by name
+
+```python
+sheet = client.open(SHEET_NAME).worksheet(NAME_OF_INDIVIDUAL_SHEET)
+```
+
+You can now use this sheet instance to do all the basic CRUD operations (put a pin in this) in that particular sheet.
+
+## Creating new data
+
+You can insert data into your spreadsheet in many different ways.
+
+**1) You can insert an entire row at a time.**
+
+```python
+row = ["This", "row", "was", "inserted", "using", "python"]
+index = 5 # This is the index of row, starting from 1
+sheet.insert_row(row, index)
+```
+
+<Image src="/images/posts/inserting-rows.webp" alt="Inserting rows" width="800" height="400" />
+
+**2) While there is no analogous function to insert_row for columns**, you can use `insert_rows` and `insert_cols`, which takes a 2-D list of values, and a starting index to update.
+
+```python
+column = [
+    ["This", "column", "was", "inserted", "using", "python"],
+    ["This", "column", "was", "also", "inserted", "using", "python"],
+]
+index = 5
+sheet.insert_cols(column, index)
+```
+
+**3) There is also `update_cell` for granularity of a cell**, or the big daddy method `batch_update`, but we'll come back to those in a bit.
+
+## Reading data
+
+**1) You can get all the records in a dictionary form** by using `get_all_records`. PPrint comes real handy when dealing with the results.
+
+```python
+sheet_data = sheet.get_all_records()
+pp = pprint.PrettyPrinter()
+pp.pprint(sheet_data)
+```
+
+<Image src="/images/posts/read-all-values.webp" alt="Reading all values" width="800" height="400" />
+
+**2) You can also get the values of individual rows and columns.**
+
+```python
+row = 1 # Starting from 1
+col = 1 # Starting from 1
+row_values = sheet.row_values(row)
+col_values = sheet.col_values(col)
+```
+
+**3) Or you can drill down the granularity of a cell with**
+
+```python
+row = 1  # Starting from 1
+col = 1  # Starting from 1
+cell = sheet.cell(col=col, row=row)
+```
+
+This will return a cell object, that gives you the position of the cell in spreadsheet as well. If you're just after the value, you can use the `.value` attribute instead
+
+```python
+cell_value = sheet.cell(col=col, row=row).value
+```
+
+## Updating Data
+
+**1) You can update a cell, whether pre-populated or not with `update_cell`**
+
+```python
+row = 1 # Starting from 1
+col = 1 # Starting from 1
+value = "Value"
+sheet.update_cell(row, col, value)
+```
+
+**2) You can also update a range of cells together with `update_cells`**
+
+```python
+cell_list = sheet.range('A1:A7') # Create a range
+
+for i, cell in enumerate(cell_list):
+    cell.value = 'Value' + str(i + 1)
+
+sheet.update_cells(cell_list) # Update cells
+```
+
+**3) Or you can use the big daddy of updating, `batch_update`**
+
+```python
+body = [
+    {
+        'range': 'A1:C2',
+        'values': [['a', 'b', 'c'], ['e', 'f', 'g']],
+    },
+    {
+        'range': 'A3',
+        'values': [['e', 'f', 'g']]
+    }
+]
+
+sheet.batch_update(body)
+```
+
+<Image src="/images/posts/batch-update-1.webp" alt="Batch update" width="800" height="400" />
+
+With `batch_update`, you are not just limited to updating values, but giving cells formatting as well.
+
+## Deleting data
+
+Just as with `insert_rows` and `insert_cols` you can use `delete_rows` and `delete_columns` to remove a range of rows and columns from the sheet.
+
+```python
+start_index = 1 # Starting from 1
+end_index = 1 # Starting from 1
+sheet.delete_rows(start_index, end_index)
+```
+
+<Image src="/images/posts/delete-rows-1.webp" alt="Delete rows" width="800" height="400" />
+
+## Doing fancier stuff
+
+You are not just limited to tinkering with data with gspread. You can add new sheets, while specifying number of rows, columns and even index.
+
+```python
+SHEET_NAME = 'PyGSheets' # Name of the sheet
+instance = client.open(SHEET_NAME)
+NAME_OF_NEW_SHEET = 'New sheet'
+no_of_rows = 100
+no_of_cols = 100
+index = 0  # Starting from 0
+instance.add_worksheet(NAME_OF_NEW_SHEET, no_of_rows, no_of_cols, index)
+```
+
+You can also format cells with format method.
+
+```python
+sheet.format('A1:B1', {'textFormat': {'bold': True}})
+```
+
+There's so much that can be done here, but I'll leave it to you to find out the what's and how's.
+
+## Here's a crazy idea . . .
+
+Let's say you have an [automated task](https://automatetheboringstuff.com/) set to run periodically, and you could really do with historical data for that task, then slipping in a script that batch updated the results into a Google sheet could be the perfect solution.
+
+This could also allow you to setup a automated pipeline to report on the historical trend of the task by collating data back from the sheet.
+
+## Here's an even crazier idea!
+
+See the order of the titles. They're very intentional. The crazy idea being if you're looking to make a simple internal app and aren't worried too much about throughput, you can just as well use Google sheets as your database.
+
+Of course if you're using a free account, you'll run into the [usage limit that Google has in place](https://developers.google.com/workspace/sheets/api/limits), but that refreshes every 100 seconds, and `batch_update` and `get_all_records` are your friend in dealing with this limitation.
+
+Hopefully this inspires you to try your hand out with Python and GSheets, or idea on how to apply this to make something in your job a little easier.
+
+For a quick reference to all the methods I discussed here, check out [this gist](https://gist.github.com/AtinAgnihotri/ca0217211bea0b535445d6802309588b).
