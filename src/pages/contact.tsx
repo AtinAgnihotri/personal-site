@@ -72,9 +72,9 @@ const Contact = () => {
 
   return (
     // <div className="flex flex-col items-center justify-end md:flex-row md:justify-between">
-    <div className="flex h-full w-full flex-col items-center justify-center p-8 pt-36 text-white md:flex-row md:pt-0">
-      <div className=" flex w-full flex-col md:mt-0">
-        <h1 className="pb-8 text-3xl text-slate-300 md:text-4xl">
+    <div className="flex min-h-full w-full max-w-full flex-col items-center justify-start px-4 py-8 pt-24 text-white md:flex-row md:justify-center md:px-8 md:pt-36">
+      <div className=" flex w-full max-w-full flex-col md:mt-0">
+        <h1 className="break-words pb-8 text-2xl text-slate-300 md:text-3xl lg:text-4xl">
           Have a burning query, think I might be the right fit for your team, or
           just wanna say hi? My inbox is always open:
         </h1>
@@ -154,17 +154,17 @@ const Contact = () => {
         </Form>
       </div>
       <Separator className="mt-8 block bg-white md:hidden" />
-      <div className="w-full  pt-8">
-        <h1 className="pb-8 text-3xl text-slate-300 md:px-32 md:text-4xl">
+      <div className="w-full pb-8 pt-8">
+        <h1 className="break-words pb-8 text-2xl text-slate-300 md:px-16 md:text-3xl lg:px-32 lg:text-4xl">
           Or you can find me here:
         </h1>
-        <div className="flex justify-between md:px-32">
+        <div className="flex flex-wrap justify-center gap-3 md:grid md:grid-cols-3 md:gap-4 md:px-16 lg:px-32 xl:grid-cols-6">
           {SocialLinks.map((sl) => {
             return (
               <Button asChild key={sl.key}>
                 <a
                   href={sl.link}
-                  className="h-8 w-8 md:h-16 md:w-16 md:text-xl"
+                  className="h-10 w-10 md:h-12 md:w-12 lg:h-16 lg:w-16 lg:text-xl xl:h-14 xl:w-14"
                 >
                   {sl.child}
                 </a>

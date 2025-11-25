@@ -8,8 +8,8 @@ type TBlogList = {
 
 const BlogPage: NextPage<TBlogList> = ({ allDocs }) => {
   return (
-    <div className="pt-8 text-white md:p-12">
-      <h1 className="py-4 text-6xl font-black">Latest in my ramblings:</h1>
+    <div className="px-4 pt-8 text-white md:p-12">
+      <h1 className="break-words py-4 text-4xl font-black md:text-5xl lg:text-6xl">Latest in my ramblings:</h1>
       {allDocs.map((doc) =>
         doc.published ? <BlogCard doc={doc} key={doc.title} /> : null,
       )}

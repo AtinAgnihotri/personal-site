@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { NavLinks, SocialLinks } from "./constants";
 import Link from "next/link";
@@ -22,6 +23,7 @@ const NavButtonCollection: React.FC<
 
 export type TNavButtons = {
   drawer?: boolean;
+  onNavigate?: () => void;
 };
 
 export const SocialNavButtons: React.FC<TNavButtons> = ({ drawer }) => {
@@ -44,14 +46,16 @@ export const SocialNavButtons: React.FC<TNavButtons> = ({ drawer }) => {
   );
 };
 
-export const SiteNavButtons: React.FC<TNavButtons> = ({ drawer }) => {
+export const SiteNavButtons: React.FC<TNavButtons> = ({ drawer, onNavigate }) => {
   return (
     <NavButtonCollection>
       {NavLinks.map((nv) => {
         return (
           <li key={nv.key} className="flex justify-center">
             <Button asChild variant="link" className="text-white">
-              <Link href={nv.link}>{nv.child}</Link>
+              <Link href={nv.link} onClick={onNavigate}>
+                {nv.child}
+              </Link>
             </Button>
           </li>
         );
@@ -88,14 +92,16 @@ export const NavDrawerButton = () => {
   );
 };
 
-export const NavDrawerSiteLinks = () => {
+export const NavDrawerSiteLinks: React.FC<TNavButtons> = ({ onNavigate }) => {
   return (
     <NavButtonCollection>
       {NavLinks.map((nv) => {
         return (
           <li key={nv.key}>
             <Button asChild variant="link" className="text-white">
-              <Link href={nv.link}>{nv.child}</Link>
+              <Link href={nv.link} onClick={onNavigate}>
+                {nv.child}
+              </Link>
             </Button>
           </li>
         );
@@ -105,14 +111,20 @@ export const NavDrawerSiteLinks = () => {
 };
 
 export const NavDrawer = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleNavigate = () => {
+    setOpen(false);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
         <NavDrawerButton />
       </PopoverTrigger>
       <PopoverContent className="w-screen border-transparent bg-transparent p-0 px-4 py-0">
         <div className="bg-[#181818dd]">
-          <SiteNavButtons drawer />
+          <SiteNavButtons drawer onNavigate={handleNavigate} />
           <SocialNavButtons drawer />
         </div>
       </PopoverContent>
