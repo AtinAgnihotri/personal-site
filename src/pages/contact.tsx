@@ -50,7 +50,7 @@ const Contact = () => {
   //     console.log(values);
   //   }
 
-  const { mutate, isLoading } = api.email.sendEmail.useMutation({
+  const { mutate, isPending } = api.email.sendEmail.useMutation({
     onSuccess: () => {
       form.reset();
     },
@@ -60,13 +60,15 @@ const Contact = () => {
   });
 
   const onSubmit = ({ name, message, email }: z.infer<typeof formSchema>) => {
-    if (isLoading) return;
+    if (isPending) return;
     mutate({
       name,
       message,
       email,
     });
   };
+
+  const isFormDisabled = true; // Email functionality is disabled
 
   return (
     // <div className="flex flex-col items-center justify-end md:flex-row md:justify-between">
@@ -76,6 +78,14 @@ const Contact = () => {
           Have a burning query, think I might be the right fit for your team, or
           just wanna say hi? My inbox is always open:
         </h1>
+        {/* Email form disabled notice */}
+        {isFormDisabled && (
+          <div className="mb-6 rounded-lg border border-yellow-600 bg-yellow-900/20 p-4 text-yellow-200">
+            <p className="text-sm md:text-base">
+              ⚠️ The contact form is currently disabled. Please use the social links below to reach out!
+            </p>
+          </div>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -84,7 +94,7 @@ const Contact = () => {
             <FormField
               control={form.control}
               name="name"
-              disabled={isLoading}
+              disabled={isPending || isFormDisabled}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -102,7 +112,7 @@ const Contact = () => {
             <FormField
               control={form.control}
               name="email"
-              disabled={isLoading}
+              disabled={isPending || isFormDisabled}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -120,7 +130,7 @@ const Contact = () => {
             <FormField
               control={form.control}
               name="message"
-              disabled={isLoading}
+              disabled={isPending || isFormDisabled}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Message</FormLabel>
@@ -135,10 +145,10 @@ const Contact = () => {
                 </FormItem>
               )}
             />
-            {isLoading ? (
+            {isPending ? (
               <LoadingSpinner size={30} />
             ) : (
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isFormDisabled}>Submit</Button>
             )}
           </form>
         </Form>

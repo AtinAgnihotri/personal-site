@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { Resend } from "resend";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { EmailTemplate } from "~/components/email-template";
 import { TRPCError } from "@trpc/server";
 
-const resend = new Resend(process.env.RESEND_KEY);
+// Email functionality is currently disabled
+// TODO: Replace with alternative email service
 
 export const emailRouter = createTRPCRouter({
   sendEmail: publicProcedure
@@ -16,30 +15,10 @@ export const emailRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      try {
-        const { name, email, message } = input;
-        const data = await resend.emails.send({
-          from: `${name} <contact@atinagnihotri.com>`,
-          to: ["atinagnihotri@gmail.com"],
-          subject: `[Site]: Emai from ${input.name}`,
-          //   react: EmailTemplate({ firstName: "John" }),
-          html: `
-            <html>
-                <body>
-                    <h1>New Email</h1>
-                    <h2>From: ${name}</h2>
-                    <h3>Email: ${email}</h3>
-                    <p>${message}</p>
-                </body>
-            </html>
-          `,
-        });
-        return data;
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: String(error),
-        });
-      }
+      // Email functionality is disabled - throw error
+      throw new TRPCError({
+        code: "NOT_IMPLEMENTED",
+        message: "Email functionality is currently disabled. Please use the social links below to contact me.",
+      });
     }),
 });

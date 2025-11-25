@@ -51,7 +51,7 @@ const AboutSection: React.FC<TAboutSection> = ({ className }) => {
       <div className="flex w-[400px] flex-col items-center md:w-[700px]">
         <AboutBlob />
         <Tabs
-          defaultValue="account"
+          defaultValue="skills"
           className="mt-10 flex w-[400px] flex-col items-center justify-center  md:mt-8 "
         >
           <TabsList className="w-full gap-10 bg-black">
