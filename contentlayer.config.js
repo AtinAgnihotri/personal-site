@@ -49,7 +49,7 @@ export default makeSource({
   contentDirPath: "posts",
   documentTypes: [Doc],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [/* remarkGfm */],
     rehypePlugins: [
       rehypeSlug,
       [
