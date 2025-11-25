@@ -23,8 +23,8 @@ const BlogCard: FC<TBlogCard> = ({ doc }) => {
 
   return (
     <Link href={`/blog/${slug}`}>
-      <Card className="my-4 w-full bg-transparent p-2 text-white md:my-8">
-        <div className="flex flex-row">
+      <Card className="my-4 w-full max-w-full overflow-hidden bg-transparent p-2 text-white md:my-8">
+        <div className="flex flex-col md:flex-row">
           {imageUrl && (
             <Image
               src={imageUrl}
@@ -32,15 +32,15 @@ const BlogCard: FC<TBlogCard> = ({ doc }) => {
               width={300}
               height={300}
               objectFit="contain"
-              className="mr-4 rounded-xl border border-white"
+              className="mb-4 hidden rounded-xl border border-white sm:block md:mb-0 md:mr-4"
             />
           )}
-          <div className="flex flex-grow flex-col justify-center">
+          <div className="flex min-w-0 flex-grow flex-col justify-center">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <h1 className="text-xl font-bold md:text-4xl">{title}</h1>
-              <h3>{getFormattedPublishingDate(publishedAt)}</h3>
+              <h1 className="break-words text-xl font-bold md:text-3xl lg:text-4xl">{title}</h1>
+              <h3 className="mt-2 text-sm md:ml-4 md:mt-0 md:whitespace-nowrap">{getFormattedPublishingDate(publishedAt)}</h3>
             </div>
-            <h2 className="pt-4 text-lg font-semibold md:text-xl">
+            <h2 className="break-words pt-4 text-base font-semibold md:text-lg lg:text-xl">
               {description}
             </h2>
           </div>
