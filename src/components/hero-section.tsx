@@ -70,7 +70,7 @@ const HeroSection: React.FC<THeroSection> = ({ className }) => {
 
         <div className="">
           <Image
-            src="/images/hero_image.jpg"
+            src="/images/avatar.png"
             alt="hero image"
             width={300}
             height={300}
