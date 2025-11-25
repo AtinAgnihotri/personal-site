@@ -18,9 +18,16 @@ const BlogPage: NextPage<TBlogList> = ({ allDocs }) => {
 };
 
 export const getStaticProps: GetStaticProps = () => {
+  // Sort blog posts by publishedAt date in descending order (newest first)
+  const sortedDocs = [...allDocs].sort((a, b) => {
+    const dateA = new Date(a.publishedAt).getTime();
+    const dateB = new Date(b.publishedAt).getTime();
+    return dateB - dateA; // Descending order (newest first)
+  });
+
   return {
     props: {
-      allDocs,
+      allDocs: sortedDocs,
     },
   };
 };
